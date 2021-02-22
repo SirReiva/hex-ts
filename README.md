@@ -1,6 +1,7 @@
-# Ttpescript hexagonal architecture starter
+# Typescript hexagonal architecture starter
 
 ### Dependecies
-  * Inversify
-  * Express
-  * Rxjs
+
+- Inversify
+- Express
+- Rxjs
