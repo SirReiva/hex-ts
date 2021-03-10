@@ -17,12 +17,8 @@ export class UserGetController extends BaseHttpController {
 
 	@httpGet('/:id')
 	async getUser(@request() req: Request, @response() res: Response) {
-		try {
-			const query = new FindUserQuery(req.params.id);
-			const userResponse = await this.queryBus.execute(query);
-			return this.json(userResponse);
-		} catch (error) {
-			return this.notFound();
-		}
+		const query = new FindUserQuery(req.params.id);
+		const userResponse = await this.queryBus.execute(query);
+		return this.json(userResponse);
 	}
 }

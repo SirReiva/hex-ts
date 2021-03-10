@@ -17,15 +17,11 @@ export class UserGetAllController extends BaseHttpController {
 
 	@httpGet('')
 	async getUser(@request() req: Request, @response() res: Response) {
-		try {
-			const query = new FindAllUserQuery();
-			const userResponse = await this.queryBus.execute(query);
-			return this.json({
-				...userResponse,
-				count: userResponse.data.length,
-			});
-		} catch (error) {
-			console.log(error);
-		}
+		const query = new FindAllUserQuery();
+		const userResponse = await this.queryBus.execute(query);
+		return this.json({
+			...userResponse,
+			count: userResponse.data.length,
+		});
 	}
 }

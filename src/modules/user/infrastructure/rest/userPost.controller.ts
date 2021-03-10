@@ -18,14 +18,12 @@ export class UserPostController extends BaseHttpController {
 
 	@httpPost('')
 	getUser(@request() req: Request, @response() res: Response) {
-		try {
-			const command = new RegisterUserCommand(
-				Math.random().toString(),
-				req.body.name,
-				req.body.email
-			);
-			this.commandBus.execute(command);
-			return res.status(StatusCodes.CREATED).send();
-		} catch (error) {}
+		const command = new RegisterUserCommand(
+			Math.random().toString(),
+			req.body.name,
+			req.body.email
+		);
+		this.commandBus.execute(command);
+		return res.status(StatusCodes.CREATED).send();
 	}
 }
