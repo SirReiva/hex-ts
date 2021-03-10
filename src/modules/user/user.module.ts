@@ -2,6 +2,7 @@ import { ContainerModule, interfaces } from 'inversify';
 import { CommandBus } from '../../shared/cqrs/CommandBus';
 import { QueryBus } from '../../shared/cqrs/QueryBus';
 import { DI } from '../../shared/DI';
+import { IModule } from '../../shared/DI/module.interface';
 import { RegisterUserCommand } from './application/commands/register-user.command';
 import { RegisterUserCommandHandler } from './application/commands/register-user.handler';
 import { FindUserQueryHandler } from './application/queries/find-user.handler';
@@ -14,27 +15,25 @@ import { RegisterUserUseCase } from './application/use-cases/register-user.useca
 import { DIUserRepository } from './domain/user.repository';
 import { InMemoryUserRepository } from './infrastructure/db/inmemory-user.repository';
 
-export const userModule = new ContainerModule(
-	(
-		bind: interfaces.Bind,
-		unbind: interfaces.Unbind,
-		isBound: interfaces.IsBound,
-		rebind: interfaces.Rebind
-	) => {
-		bind(DIUserRepository).to(InMemoryUserRepository).inSingletonScope();
-		bind(CommandBus).toSelf().inSingletonScope();
-		bind(QueryBus).toSelf().inSingletonScope();
-		bind(RegisterUserCommandHandler).toSelf();
-		bind(FindUserQueryHandler).toSelf();
-		bind(FindAllUserQueryHandler).toSelf();
-		bind(FindAllUserUsecase).toSelf();
-		bind(FindUserUsecase).toSelf();
-		bind(RegisterUserUseCase).toSelf();
-	}
-);
-
-export const UserModule = {
-	container: userModule,
+export const UserModule: IModule = {
+	container: new ContainerModule(
+		(
+			bind: interfaces.Bind,
+			unbind: interfaces.Unbind,
+			isBound: interfaces.IsBound,
+			rebind: interfaces.Rebind
+		) => {
+			bind(DIUserRepository).to(InMemoryUserRepository).inSingletonScope();
+			bind(CommandBus).toSelf().inSingletonScope();
+			bind(QueryBus).toSelf().inSingletonScope();
+			bind(RegisterUserCommandHandler).toSelf();
+			bind(FindUserQueryHandler).toSelf();
+			bind(FindAllUserQueryHandler).toSelf();
+			bind(FindAllUserUsecase).toSelf();
+			bind(FindUserUsecase).toSelf();
+			bind(RegisterUserUseCase).toSelf();
+		}
+	),
 	onload: () => {
 		const commandBus: CommandBus = DI.getInstace().get(CommandBus);
 		const queryBus: QueryBus = DI.getInstace().get(QueryBus);

@@ -1,5 +1,12 @@
-import { Application, json, urlencoded } from 'express';
-import { Container, ContainerModule } from 'inversify';
+import {
+	Application,
+	json,
+	NextFunction,
+	Request,
+	Response,
+	urlencoded,
+} from 'express';
+import { Container } from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import './modules/user/infrastructure/rest/userGet.controller';
 import './modules/user/infrastructure/rest/userGetAll.controller';
@@ -28,14 +35,24 @@ export class App {
 
 	async run() {
 		await this.initInfra();
-		this.server.setConfig((app: Application) => {
-			app.use(json());
-			app.use(
-				urlencoded({
-					extended: true,
-				})
-			);
-		});
+		this.server
+			.setConfig((app: Application) => {
+				app.use(json());
+				app.use(
+					urlencoded({
+						extended: true,
+					})
+				);
+			})
+			.setErrorConfig(app => {
+				app.use(
+					(err: Error, req: Request, res: Response, next: NextFunction) => {
+						console.error(err.stack);
+						res.status(500).send('Something broke!');
+					}
+				);
+			});
+
 		const app = this.server.build();
 
 		return new Promise((resolve, reject) => {
