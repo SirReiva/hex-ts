@@ -1,29 +1,31 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 import {
-    BaseHttpController,
-    controller,
-    httpGet,
-    request,
-    response,
-} from "inversify-express-utils";
-import { FindAllUserQuery } from "../../application/queries/findAll-user.query";
-import { FindAllUserUsecase } from "../../application/use-cases/findAll-user.usecase";
+	BaseHttpController,
+	controller,
+	httpGet,
+	request,
+	response,
+} from 'inversify-express-utils';
+import { QueryBus } from '../../../../shared/cqrs/QueryBus';
+import { FindAllUserQuery } from '../../application/queries/findAll-user.query';
 
-@controller("/users")
+@controller('/users')
 export class UserGetAllController extends BaseHttpController {
-    constructor(private readonly findAllUserUseCase: FindAllUserUsecase) {
-        super();
-    }
+	constructor(private readonly queryBus: QueryBus) {
+		super();
+	}
 
-    @httpGet("")
-    getUser(@request() req: Request, @response() res: Response) {
-        try {
-            const query = new FindAllUserQuery();
-            const userResponse = this.findAllUserUseCase.execute(query);
-            return this.json({
-                ...userResponse,
-                count: userResponse.data.length,
-            });
-        } catch (error) {}
-    }
+	@httpGet('')
+	async getUser(@request() req: Request, @response() res: Response) {
+		try {
+			const query = new FindAllUserQuery();
+			const userResponse = await this.queryBus.execute(query);
+			return this.json({
+				...userResponse,
+				count: userResponse.data.length,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
 }

@@ -4,18 +4,23 @@ import { InversifyExpressServer } from 'inversify-express-utils';
 import './modules/user/infrastructure/rest/userGet.controller';
 import './modules/user/infrastructure/rest/userGetAll.controller';
 import './modules/user/infrastructure/rest/userPost.controller';
+import { DI } from './shared/DI';
+import { IModule } from './shared/DI/module.interface';
 
 export class App {
 	private server: InversifyExpressServer;
 	private container: Container;
 
 	constructor() {
-		this.container = new Container({});
+		this.container = DI.getInstace();
 		this.server = new InversifyExpressServer(this.container);
 	}
 
-	loadModules(modules: ContainerModule[]): this {
-		this.container.load(...modules);
+	loadModules(modules: IModule[]): this {
+		this.container.load(...modules.map(m => m.container));
+		for (const mod of modules) {
+			mod.onload();
+		}
 		return this;
 	}
 

@@ -1,29 +1,28 @@
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
+import { Request, Response } from 'express';
 import {
-    BaseHttpController,
-    controller,
-    httpGet,
-    request,
-    response,
-} from "inversify-express-utils";
-import { FindUserQuery } from "../../application/queries/find-user.query";
-import { FindUserUsecase } from "../../application/use-cases/find-user.usecase";
+	BaseHttpController,
+	controller,
+	httpGet,
+	request,
+	response,
+} from 'inversify-express-utils';
+import { QueryBus } from '../../../../shared/cqrs/QueryBus';
+import { FindUserQuery } from '../../application/queries/find-user.query';
 
-@controller("/users")
+@controller('/users')
 export class UserGetController extends BaseHttpController {
-    constructor(private readonly findUserUseCase: FindUserUsecase) {
-        super();
-    }
+	constructor(private readonly queryBus: QueryBus) {
+		super();
+	}
 
-    @httpGet("/:id")
-    getUser(@request() req: Request, @response() res: Response) {
-        try {
-            const query = new FindUserQuery(req.params.id);
-            const userResponse = this.findUserUseCase.execute(query);
-            return this.json(userResponse);
-        } catch (error) {
-            return this.notFound();
-        }
-    }
+	@httpGet('/:id')
+	async getUser(@request() req: Request, @response() res: Response) {
+		try {
+			const query = new FindUserQuery(req.params.id);
+			const userResponse = await this.queryBus.execute(query);
+			return this.json(userResponse);
+		} catch (error) {
+			return this.notFound();
+		}
+	}
 }

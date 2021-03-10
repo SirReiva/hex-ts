@@ -1,5 +1,5 @@
-import { IQuery } from "../../../../shared/application/IQuery";
+import { IQuery } from '../../../../shared/cqrs/query.interface';
 
 export class FindUserQuery implements IQuery {
-    constructor(public readonly id: string) {}
+	constructor(public readonly id: string) {}
 }

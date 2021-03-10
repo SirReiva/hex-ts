@@ -1,9 +1,7 @@
-import { ICommand } from "./ICommnand";
-import { IQuery } from "./IQuery";
-import { IResponse } from "./IResponse";
+import { IResponse } from './IResponse';
 
 export interface IUseCase {
-    execute(
-        input: IQuery | ICommand
-    ): IResponse | Promise<IResponse> | void | Promise<void>;
+	execute(
+		...input: any[]
+	): IResponse | Promise<IResponse> | void | Promise<void>;
 }
