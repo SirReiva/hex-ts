@@ -8,11 +8,10 @@ import {
 } from 'express';
 import { Container } from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
-import './modules/user/infrastructure/rest/userGet.controller';
-import './modules/user/infrastructure/rest/userGetAll.controller';
-import './modules/user/infrastructure/rest/userPost.controller';
 import { DI } from './shared/DI';
 import { IModule } from './shared/DI/module.interface';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json';
 
 export class App {
 	private server: InversifyExpressServer;
@@ -20,7 +19,9 @@ export class App {
 
 	constructor() {
 		this.container = DI.getInstace();
-		this.server = new InversifyExpressServer(this.container);
+		this.server = new InversifyExpressServer(this.container, null, {
+			rootPath: '/api/v1',
+		});
 	}
 
 	loadModules(modules: IModule[]): this {
@@ -37,6 +38,7 @@ export class App {
 		await this.initInfra();
 		this.server
 			.setConfig((app: Application) => {
+				app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 				app.use(json());
 				app.use(
 					urlencoded({
@@ -46,7 +48,7 @@ export class App {
 			})
 			.setErrorConfig(app => {
 				app.use(
-					(err: Error, req: Request, res: Response, next: NextFunction) => {
+					(err: Error, _req: Request, res: Response, _next: NextFunction) => {
 						console.error(err.stack);
 						res.status(500).send('Something broke!');
 					}

@@ -15,6 +15,15 @@ export class UserGetAllController extends BaseHttpController {
 		super();
 	}
 
+	/**
+	 * @openapi
+	 * /api/v1/users:
+	 *   get:
+	 *     description: Welcome to swagger-jsdoc!
+	 *     responses:
+	 *       200:
+	 *         description: Returns a mysterious string.
+	 */
 	@httpGet('')
 	async getUser(@request() req: Request, @response() res: Response) {
 		const query = new FindAllUserQuery();

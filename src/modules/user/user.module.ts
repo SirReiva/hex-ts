@@ -14,6 +14,9 @@ import { FindAllUserUsecase } from './application/use-cases/findAll-user.usecase
 import { RegisterUserUseCase } from './application/use-cases/register-user.usecas';
 import { DIUserRepository } from './domain/user.repository';
 import { InMemoryUserRepository } from './infrastructure/db/inmemory-user.repository';
+import './infrastructure/rest/userGet.controller';
+import './infrastructure/rest/userGetAll.controller';
+import './infrastructure/rest/userPost.controller';
 
 export const UserModule: IModule = {
 	container: new ContainerModule(
